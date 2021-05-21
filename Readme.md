@@ -48,7 +48,13 @@ $ rostopic list
 
 카메라 여러 대 추가 불가능 - 토픽 겹침(현재 1대 publish는 됨)
 
-해결 어떻게 할지 - 1. roslaunch로 multiple camera 진행하는 다른 예제 찾아보기, 2. 설마 플러그인 다 개별로 만들어야 되나?
+해결 어떻게 할지 - 
+
+1. roslaunch로 multiple camera 진행하는 다른 예제 찾아보기
+
+2. 설마 플러그인 다 개별로 만들어야 되나?
+
+
 
 libgazebo_ros_api_plugin.so(ros구동위해) 안 부르고 ros node initialize 어떻게 할지
 
