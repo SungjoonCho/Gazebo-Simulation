@@ -7,7 +7,7 @@ L515
 azure kinect
 예정
 
-### Plugin
+## Plugin
 
 realsense_gazebo_plugin-master > build 에서 cmake../ , make 로 빌드 => build > devel > lib에 librealsense_gazebo_plugin.so 플러그인 파일 생성
 
@@ -15,19 +15,19 @@ librealsense_gazebo_plugin.so => src > gazebo_ros_realsense.cpp, RealSensePlugin
 
  /usr/lib/x86_64-linux-gnu/cmake/gazebo/plugins로 옮기기
 
-### Model
+## Model
 
 /home/jskimlab/.gazebo/models/realsense_camera에 위치
 
 model sdf의 plugin 태그에서 위의 플러그인 불러주기
 
-### World
+## World
 
 world_env.world : world file 
 
 world file에서 카메라 모델 직접 삽입(Insert - realsense camera)
 
-### 실행
+## 실행
 
 단순 실행시 - $project1/world    gazebo --verbose -s libgazebo_ros_api_plugin.so world_env.world (ros init 위해)
 
@@ -35,7 +35,7 @@ world file에서 카메라 모델 직접 삽입(Insert - realsense camera)
 
 새로운 모델 추가시 - $project1/world     sudo gazebo --verbose world_env.world 
 
-### Rviz 
+## Rviz 
 
 $ rosrun rviz rviz
 
@@ -44,7 +44,7 @@ $ rosrun rviz rviz
 $ rostopic list
 
 
-### 문제
+## 문제
 
 카메라 여러 대 추가 불가능 - 토픽 겹침(현재 1대 publish는 됨)
 
@@ -61,11 +61,11 @@ libgazebo_ros_api_plugin.so(ros구동위해) 안 부르고 ros node initialize �
 model sdf plugin 내부 태그 수정할지?
 
 
-### 기타 사항
+## 기타 사항
 
 plugin 및 기타 path : /usr/lib/x86_64-linux-gnu/gazebo-9/plugins
 
-### 참고
+## 참고
 
 https://github.com/SyrianSpock/realsense_gazebo_plugin - origin 
 
