@@ -13,7 +13,7 @@ realsense_gazebo_plugin-master > build 에서 cmake../ , make 로 빌드 => buil
 
 librealsense_gazebo_plugin.so => src > gazebo_ros_realsense.cpp, RealSensePlugin.cpp로 생성
 
- /usr/lib/x86_64-linux-gnu/cmake/gazebo/plugins로 옮기기
+/usr/lib/x86_64-linux-gnu/gazebo-9/plugins로 옮기기
 
 ## Model
 
