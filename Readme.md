@@ -6,6 +6,10 @@
 
 ## Execute
 
+* Mesh model 다운로드
+
+  http://data.nvision2.eecs.yorku.ca/3DGEMS/ 에서 mesh 파일 다운받아 .gazebo/models로 이동
+
 Plugin 파일 다운로드 & 별도 수정 필요시 빌드 과정
 <pre>
   mkdir build_plugin
@@ -48,19 +52,32 @@ killall gzserver gzclient
 ## 상세 구성
 
 * World
-
+<pre>
 world_env.world : world file 
 
-world file에서 카메라 모델 직접 삽입(Insert - realsense camera)
+http://data.nvision2.eecs.yorku.ca/3DGEMS/ 에서 mesh 파일 다운받아 .gazebo/models로 이동
 
-* Model(urdf)
+gazebo - insert 탭에서 필요한 model insert
+</Pre>
+
 
 * Plugin
+<pre>
+</pre>
 
-* roslaunch
-
-* 
-
+* description
+<pre>
+  1. roslaunch로 lab_world.launch 호출
+     include 태그 안의 value attribute에 부르고자 하는 world 넣기
+     필요 argument에 true 기입 (verbose -> error 검출하는데 도움)
+     
+     param에 부르고자 하는 카메라 모델 xacro 입력 (multi_simulation.xacro 호출함)
+     spawn_model python script node로 gazebo에 모델 띄우기
+     
+   2. multi_simulation.xacro
+      카메라 xacro(상세 플러그인, 속성 포함한 파일) 호출
+      여기서 카메라의 xyz, rpy 입력
+</pre>
 
 ## Plugin
 
@@ -76,7 +93,6 @@ librealsense_gazebo_plugin.so => src > gazebo_ros_realsense.cpp, RealSensePlugin
 
 model sdf의 plugin 태그에서 위의 플러그인 불러주기
 
-## World
 
 
 
