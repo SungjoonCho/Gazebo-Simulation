@@ -6,6 +6,25 @@
 
 ## Execute
 
+Plugin 파일 다운로드 & 별도 수정 필요시 빌드 과정
+<pre>
+mkdir build_plugin
+cd build_plugin
+git clone https://github.com/pal-robotics/realsense_gazebo_plugin.git
+cd realsense_gazebo_plugin
+mkdir build
+cd build
+cmake ../
+make
+
+* 필요시 plugin_build/realsense_gazebo_plugin/src의 소스코드들 수정하여 다시 빌드
+* 수정 & 빌드 완료시 플러그인 파일 위치로 이동
+cd devel/lib
+
+* 빌드된 플러그인 파일 옮기기(model urdf 코드에서 plugin 요청 경로 수정해도 됨)
+sudo cp librealsense_gazebo_gazebo_plugin.so /usr/lib/x86_64-linux-gnu/gazebo-9/plugins/
+</pre>
+
 Ros 환경 구성
 <pre>
 mkdir catkin_ws
@@ -17,16 +36,17 @@ source ./devel/setup.bash
 roslaunch realsense_lab lab_world.launch
 </pre>
 
-
 강제 종료
 <pre>
 killall gzserver gzclient
 </pre>
 
-Plugin 수정 필요시 빌드 과정
-<pre>
+## 상세 설명
 
-</pre>
+
+
+
+
 
 ## Plugin
 
