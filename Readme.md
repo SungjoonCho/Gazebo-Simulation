@@ -1,11 +1,32 @@
-## Gazebo simulation with multicamera (publish rgb, depth image for reconstruction) (ongoing)
+## Gazebo simulation with multicamera (publish rgb, depth image for 3D reconstruction) (ongoing)
 
-Realsense D435 model 이용 
+* world : 랩실
+* gazebo + ros 이용
+* Realsense camera n대 달아 각 카메라별로 rgb, depth, ir frame 얻은 후 모두 다른 topic으로 publish -> 3D reconstruction 예정 
 
-D435
-L515
-azure kinect
-예정
+## Execute
+
+Ros 환경 구성
+<pre>
+mkdir catkin_ws
+cd catkin_ws
+git clone https://github.com/SungjoonCho/gazebo_sim_multicamera.git
+mv gazebo_sim_multicamera src
+catkin_make
+source ./devel/setup.bash
+roslaunch realsense_lab lab_world.launch
+</pre>
+
+
+강제 종료
+<pre>
+killall gzserver gzclient
+</pre>
+
+Plugin 수정 필요시 빌드 과정
+<pre>
+
+</pre>
 
 ## Plugin
 
@@ -44,21 +65,7 @@ $ rosrun rviz rviz
 $ rostopic list
 
 
-## 문제
 
-카메라 여러 대 추가 불가능 - 토픽 겹침(현재 1대 publish는 됨)
-
-해결 어떻게 할지 - 
-
-1. roslaunch로 multiple camera 진행하는 다른 예제 찾아보기
-
-2. 설마 플러그인 다 개별로 만들어야 되나?
-
-
-
-libgazebo_ros_api_plugin.so(ros구동위해) 안 부르고 ros node initialize 어떻게 할지
-
-model sdf plugin 내부 태그 수정할지?
 
 
 ## 기타 사항
