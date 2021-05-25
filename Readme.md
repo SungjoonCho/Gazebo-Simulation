@@ -74,18 +74,23 @@ gazebo - insert 탭에서 필요한 model insert
      param에 부르고자 하는 카메라 모델 xacro 입력 (multi_simulation.xacro 호출함)
      spawn_model python script node로 gazebo에 모델 띄우기
      
-   2. multi_simulation.xacro
-      카메라 xacro(상세 플러그인, 속성 포함한 파일) 호출
-      여기서 카메라의 xyz, rpy 입력
+     multi_simulation.xacro 호출
+     
+   2. multi_simulation.xacro      
+      여기서 카메라의 xyz, rpy, prefix(각 카메라 별명으로 설정) 입력
+      카메라 총 3대 입력하였으며 필요시 위 정보 기입하여 n대 추가 가능
+      realsense.macro.xacro(상세 플러그인, 속성 포함한 파일) 호출
+      
+   3. realsense.macro.xacro
+      카메라의 속성 및 정보 입력, prefix 받아와 sensor와 plugin의 name attribute에 꼭 포함시켜 주기 
+      - 안 해줄 경우 plugin 파일에서는 Sensormanager가 model 내부 각 tag들의 name atrribute로 
+        영상 frame을 분별하고 publish하도록 만들어져 있기 때문에 topic이 다르더라도 동일한 영상 publish 
+      
+      plugin 태그 안에 파싱할 Camera parameters 입력, 위와 마찬가지로 topic name은 카메라마다, rgbd영상마다 달라야하므로 prefix 가져와 입력되도록 하기.
 </pre>
 
 ## Plugin
 
-realsense_gazebo_plugin-master > build 에서 cmake../ , make 로 빌드 => build > devel > lib에 librealsense_gazebo_plugin.so 플러그인 파일 생성
-
-librealsense_gazebo_plugin.so => src > gazebo_ros_realsense.cpp, RealSensePlugin.cpp로 생성
-
-/usr/lib/x86_64-linux-gnu/gazebo-9/plugins로 옮기기
 
 ## Model
 
