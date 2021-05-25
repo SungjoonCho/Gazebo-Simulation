@@ -63,6 +63,11 @@ gazebo - insert 탭에서 필요한 model insert
 
 * Plugin
 <pre>
+RealSensePlugin.cpp, gazebo_ros_realsense.cpp 모두 필수
+
+RealSensePlugin.cpp
+model urdf 내의 Camera parameters tag 파싱하여 파라미터 값, publish 토픽 설정
+Get Cameras Renderers 부분에서 SensorManager 만든 후 urdf 내의 sensor tag, name attribute로 각 카메라 프레임 획득
 </pre>
 
 * description
@@ -89,29 +94,11 @@ gazebo - insert 탭에서 필요한 model insert
       plugin 태그 안에 파싱할 Camera parameters 입력, 위와 마찬가지로 topic name은 카메라마다, rgbd영상마다 달라야하므로 prefix 가져와 입력되도록 하기.
 </pre>
 
-## Plugin
-
-
-## Model
-
-/home/jskimlab/.gazebo/models/realsense_camera에 위치
-
-model sdf의 plugin 태그에서 위의 플러그인 불러주기
-
-
-
-
-## 실행
-
-단순 실행시 - $project1/world    gazebo --verbose -s libgazebo_ros_api_plugin.so world_env.world (ros init 위해)
-
-재실행시 - killall gzserver, sudo killall gzserver
-
-새로운 모델 추가시 - $project1/world     sudo gazebo --verbose world_env.world 
 
 ## Rviz 
 
 $ rosrun rviz rviz
+
 
 ### Rostopic
 
@@ -119,18 +106,10 @@ $ rostopic list
 
 
 
-
-
-## 기타 사항
-
-plugin 및 기타 path : /usr/lib/x86_64-linux-gnu/gazebo-9/plugins
-
 ## 참고
+
+https://github.com/IntelRealSense/realsense-ros
 
 https://github.com/SyrianSpock/realsense_gazebo_plugin - origin 
 
 https://github.com/pal-robotics/realsense_gazebo_plugin - upgraded for D435
-
-openni 참고하기
-
-
