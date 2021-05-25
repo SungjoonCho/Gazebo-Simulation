@@ -4,6 +4,11 @@
 * gazebo + ros 이용
 * Realsense camera n대 달아 각 카메라별로 rgb, depth, ir frame 얻은 후 모두 다른 topic으로 publish -> 3D reconstruction 예정 
 
+<p align="center">
+  <img width="800" height="500" src="https://user-images.githubusercontent.com/80872528/119465879-0eb26280-bd7f-11eb-8f15-3c75bfa9a932.png">
+</p>
+
+
 ## Execute
 
 * Mesh model 다운로드
@@ -99,12 +104,13 @@ Get Cameras Renderers 부분에서 SensorManager 만든 후 urdf 내의 sensor t
 
 $ rosrun rviz rviz
 
+<p align="center">
+  <img width="800" height="500" src="https://user-images.githubusercontent.com/80872528/119466531-aa43d300-bd7f-11eb-8c38-dd6412a49259.png">
+</p>
 
 ### Rostopic
 
 $ rostopic list
-
-
 
 ## 참고
 
