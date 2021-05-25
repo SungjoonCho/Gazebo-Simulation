@@ -63,6 +63,8 @@ world_env.world : world file
 http://data.nvision2.eecs.yorku.ca/3DGEMS/ 에서 mesh 파일 다운받아 .gazebo/models로 이동
 
 gazebo - insert 탭에서 필요한 model insert
+
+world 파일 수정시 save as 해서 저장 안되면 sudo 붙여서 파일 열고 저장해보기
 </Pre>
 
 
