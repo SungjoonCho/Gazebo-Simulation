@@ -1,4 +1,4 @@
-## Gazebo simulation with multicamera (publish rgb, depth image for 3D reconstruction) (ongoing)
+## Gazebo simulation with multicamera (publish rgb, depth image for 3D reconstruction) 
 
 * world : 랩실
 * gazebo + ros 이용
