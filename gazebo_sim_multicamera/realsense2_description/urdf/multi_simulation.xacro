@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<robot name="robot_with_multiplecamera" xmlns:xacro="http://ros.org/wiki/xacro">
+    <link name="world"/>
+    <!-- Import macro for realsense-RS200 camera-->
+    <xacro:include filename="$(find realsense2_description)/urdf/realsense.macro.xacro"/>
+
+    <xacro:realsense-rs200 prefix="realsense1" parent="world">
+        <origin xyz="-16.0 -4.0 3" rpy="0.2 1.1 0.5" />
+    </xacro:realsense-rs200>
+    <xacro:realsense-rs200 prefix="realsense2" parent="world">
+        <origin xyz="-12.2 -0.9 3" rpy="0 0.5 -2.5" />
+    </xacro:realsense-rs200>
+    <xacro:realsense-rs200 prefix="realsense3" parent="world">
+        <origin xyz="-11.3 -4.2 3" rpy="0 0.5 2.8" />
+    </xacro:realsense-rs200>
+</robot>
