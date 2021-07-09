@@ -1,118 +1,107 @@
 ## Gazebo simulation with multicamera (publish rgb, depth image for 3D reconstruction) 
 
-* world : 랩실
-* gazebo + ros 이용
-* Realsense camera n대 달아 각 카메라별로 rgb, depth, ir frame 얻은 후 모두 다른 topic으로 publish -> 3D reconstruction 예정 
+* world : Laboratory
+* Gazebo + ROS(melodic)
+* After installing n Realsense cameras to obtain rgb, depth, and ir frames for each camera, publish them all to different topics -> 3D reconstruction planned
 
 <p align="center">
   <img width="800" height="500" src="https://user-images.githubusercontent.com/80872528/119465879-0eb26280-bd7f-11eb-8f15-3c75bfa9a932.png">
 </p>
 
 
-## Execute
+## Building plugin
 
-* Mesh model 다운로드
+Download Mesh model 
+* Download files from http://data.nvision2.eecs.yorku.ca/3DGEMS/, move them to .gazebo/models
 
-  http://data.nvision2.eecs.yorku.ca/3DGEMS/ 에서 mesh 파일 다운받아 .gazebo/models로 이동
-
-Plugin 파일 다운로드 & 별도 수정 필요시 빌드 과정
+Builing plugin and modifying 
 <pre>
-  mkdir build_plugin
-  cd build_plugin
-  git clone https://github.com/pal-robotics/realsense_gazebo_plugin.git
-  cd realsense_gazebo_plugin
-  mkdir build
-  cd build
-  cmake ../
-  make
-
-* 필요시 plugin_build/realsense_gazebo_plugin/src의 소스코드들 수정하여 다시 빌드
-* 수정 & 빌드 완료시 플러그인 파일 위치로 이동
-  cd devel/lib
-
-* 빌드된 플러그인 파일 옮기기(model urdf 코드에서 plugin 요청 경로 수정해도 됨)
-  sudo cp librealsense_gazebo_gazebo_plugin.so /usr/lib/x86_64-linux-gnu/gazebo-9/plugins/
+  $ mkdir build_plugin
+  $ cd build_plugin
+  $ git clone https://github.com/pal-robotics/realsense_gazebo_plugin.git
+  $ cd realsense_gazebo_plugin
+  $ mkdir build
+  $cd build
+  $ cmake ../
+  $ make
 </pre>
 
-Ros 환경 구성
+* If necessary, modify the source codes of plugin_build/realsense_gazebo_plugin/src and rebuild
+* Go to the plugin file location ($ cd devel/lib) upon modification & build completion
+* Move built-in plugin files(Or you can modify the plugin request path in the urdf code of model)
+<pre>
+$ sudo cp librealsense_gazebo_gazebo_plugin.so /usr/lib/x86_64-linux-gnu/gazebo-9/plugins/
+</pre>
+
+## Execute
 <pre>
 * terminal 1
-  roscore
+  $ roscore
 
 * terminal 2
-  mkdir catkin_ws
-  cd catkin_ws
-  git clone https://github.com/SungjoonCho/gazebo_sim_multicamera.git
-  mv gazebo_sim_multicamera src
-  catkin_make
-  source ./devel/setup.bash
-  roslaunch realsense_lab lab_world.launch
+  $ mkdir -p catkin_ws/src
+  $ cd catkin_ws/src
+  Download gazebo_sim_multicamera directory
+  $ cd ..
+  $ catkin_make
+  $ source ./devel/setup.bash
+  $ roslaunch realsense_lab lab_world.launch
 </pre>
 
-강제 종료
+Force quit
 <pre>
-killall gzserver gzclient
+$ killall gzserver gzclient
 </pre>
 
-## 상세 구성
+## Configuration
 
-* World
-<pre>
-world_env.world : world file 
+World
+* world_env.world : world file 
 
-http://data.nvision2.eecs.yorku.ca/3DGEMS/ 에서 mesh 파일 다운받아 .gazebo/models로 이동
+Model
+* Drag & Drop model from insert tab in menu
+* When editing the world file, if it is not saved by **save as**, open the file with sudo.
 
-gazebo - insert 탭에서 필요한 model insert
-
-world 파일 수정시 save as 해서 저장 안되면 sudo 붙여서 파일 열고 저장해보기
-</Pre>
-
-
-* Plugin
-<pre>
-RealSensePlugin.cpp, gazebo_ros_realsense.cpp 모두 필수
+Plugin
+* RealSensePlugin.cpp, gazebo_ros_realsense.cpp both required.
 
 RealSensePlugin.cpp
-model urdf 내의 Camera parameters tag 파싱하여 파라미터 값, publish 토픽 설정
-Get Cameras Renderers 부분에서 SensorManager 만든 후 urdf 내의 sensor tag, name attribute로 각 카메라 프레임 획득
-</pre>
+* Parsing camera parameters tag from model urdf to set parameter value and publish topic
+* After creating a SensorManager in Get Cameras Renderers part, it acquires each camera frame with **sensor** tag and **name** attribute in urdf
 
-* description
-<pre>
-  1. roslaunch로 lab_world.launch 호출
-     include 태그 안의 value attribute에 부르고자 하는 world 넣기
-     필요 argument에 true 기입 (verbose -> error 검출하는데 도움)
+Description
+
+  1. Run lab_world.launch
+     * Put the world you want to call in the **value** attribute in the **include** tag
+     * Write **true** in the required argument (verbose -> help to detect errors)
      
-     param에 부르고자 하는 카메라 모델 xacro 입력 (multi_simulation.xacro 호출함)
-     spawn_model python script node로 gazebo에 모델 띄우기
+     * Input the camera model xacro you want to call with param
+     * **spawn_model** python script node - Put model on gazebo
      
-     multi_simulation.xacro 호출
      
-   2. multi_simulation.xacro      
-      여기서 카메라의 xyz, rpy, prefix(각 카메라 별명으로 설정) 입력
-      카메라 총 3대 입력하였으며 필요시 위 정보 기입하여 n대 추가 가능
-      realsense.macro.xacro(상세 플러그인, 속성 포함한 파일) 호출
+   2. Call multi_simulation.xacro      
+      * Input camera's xyz, rpy, prefix (set by each camera alias)
+      * A total of 3 cameras have been used. If necessary, you can add n cameras by using the above information.
+      * Call realsense.macro.xacro(including sensor attribute, plugin)
       
    3. realsense.macro.xacro
-      카메라의 속성 및 정보 입력, prefix 받아와 sensor와 plugin의 name attribute에 꼭 포함시켜 주기 
-      - 안 해줄 경우 plugin 파일에서는 Sensormanager가 model 내부 각 tag들의 name atrribute로 
-        영상 frame을 분별하고 publish하도록 만들어져 있기 때문에 topic이 다르더라도 동일한 영상 publish 
-      
-      plugin 태그 안에 파싱할 Camera parameters 입력, 위와 마찬가지로 topic name은 카메라마다, rgbd영상마다 달라야하므로 prefix 가져와 입력되도록 하기.
-</pre>
-
-
+      * Include camera properties and information, receive prefix
+      * Be sure to include above prefix number in the name attribute of sensor and plugin
+      - It not, the same image will be published.
+     
 ## Rviz 
-
+<pre>
 $ rosrun rviz rviz
+</pre>
 
 <p align="center">
   <img width="800" height="500" src="https://user-images.githubusercontent.com/80872528/119466531-aa43d300-bd7f-11eb-8c38-dd6412a49259.png">
 </p>
 
-### Rostopic
-
+## Rostopic
+<pre>
 $ rostopic list
+</pre>
 
 <pre>
 /clock
@@ -167,104 +156,72 @@ $ rostopic list
 /realsense1r200/realsense1/ir2/image/theora
 /realsense1r200/realsense1/ir2/image/theora/parameter_descriptions
 /realsense1r200/realsense1/ir2/image/theora/parameter_updates
-/realsense2r200/realsense2/color/camera_info
-/realsense2r200/realsense2/color/image
-/realsense2r200/realsense2/color/image/compressed
-/realsense2r200/realsense2/color/image/compressed/parameter_descriptions
-/realsense2r200/realsense2/color/image/compressed/parameter_updates
-/realsense2r200/realsense2/color/image/compressedDepth
-/realsense2r200/realsense2/color/image/compressedDepth/parameter_descriptions
-/realsense2r200/realsense2/color/image/compressedDepth/parameter_updates
-/realsense2r200/realsense2/color/image/theora
-/realsense2r200/realsense2/color/image/theora/parameter_descriptions
-/realsense2r200/realsense2/color/image/theora/parameter_updates
-/realsense2r200/realsense2/depth/camera_info
-/realsense2r200/realsense2/depth/image
-/realsense2r200/realsense2/depth/image/compressed
-/realsense2r200/realsense2/depth/image/compressed/parameter_descriptions
-/realsense2r200/realsense2/depth/image/compressed/parameter_updates
-/realsense2r200/realsense2/depth/image/compressedDepth
-/realsense2r200/realsense2/depth/image/compressedDepth/parameter_descriptions
-/realsense2r200/realsense2/depth/image/compressedDepth/parameter_updates
-/realsense2r200/realsense2/depth/image/theora
-/realsense2r200/realsense2/depth/image/theora/parameter_descriptions
-/realsense2r200/realsense2/depth/image/theora/parameter_updates
-/realsense2r200/realsense2/ir1/camera_info
-/realsense2r200/realsense2/ir1/image
-/realsense2r200/realsense2/ir1/image/compressed
-/realsense2r200/realsense2/ir1/image/compressed/parameter_descriptions
-/realsense2r200/realsense2/ir1/image/compressed/parameter_updates
-/realsense2r200/realsense2/ir1/image/compressedDepth
-/realsense2r200/realsense2/ir1/image/compressedDepth/parameter_descriptions
-/realsense2r200/realsense2/ir1/image/compressedDepth/parameter_updates
-/realsense2r200/realsense2/ir1/image/theora
-/realsense2r200/realsense2/ir1/image/theora/parameter_descriptions
-/realsense2r200/realsense2/ir1/image/theora/parameter_updates
-/realsense2r200/realsense2/ir2/camera_info
-/realsense2r200/realsense2/ir2/image
-/realsense2r200/realsense2/ir2/image/compressed
-/realsense2r200/realsense2/ir2/image/compressed/parameter_descriptions
-/realsense2r200/realsense2/ir2/image/compressed/parameter_updates
-/realsense2r200/realsense2/ir2/image/compressedDepth
-/realsense2r200/realsense2/ir2/image/compressedDepth/parameter_descriptions
-/realsense2r200/realsense2/ir2/image/compressedDepth/parameter_updates
-/realsense2r200/realsense2/ir2/image/theora
-/realsense2r200/realsense2/ir2/image/theora/parameter_descriptions
-/realsense2r200/realsense2/ir2/image/theora/parameter_updates
-/realsense3r200/realsense3/color/camera_info
-/realsense3r200/realsense3/color/image
-/realsense3r200/realsense3/color/image/compressed
-/realsense3r200/realsense3/color/image/compressed/parameter_descriptions
-/realsense3r200/realsense3/color/image/compressed/parameter_updates
-/realsense3r200/realsense3/color/image/compressedDepth
-/realsense3r200/realsense3/color/image/compressedDepth/parameter_descriptions
-/realsense3r200/realsense3/color/image/compressedDepth/parameter_updates
-/realsense3r200/realsense3/color/image/theora
-/realsense3r200/realsense3/color/image/theora/parameter_descriptions
-/realsense3r200/realsense3/color/image/theora/parameter_updates
-/realsense3r200/realsense3/depth/camera_info
-/realsense3r200/realsense3/depth/image
-/realsense3r200/realsense3/depth/image/compressed
-/realsense3r200/realsense3/depth/image/compressed/parameter_descriptions
-/realsense3r200/realsense3/depth/image/compressed/parameter_updates
-/realsense3r200/realsense3/depth/image/compressedDepth
-/realsense3r200/realsense3/depth/image/compressedDepth/parameter_descriptions
-/realsense3r200/realsense3/depth/image/compressedDepth/parameter_updates
-/realsense3r200/realsense3/depth/image/theora
-/realsense3r200/realsense3/depth/image/theora/parameter_descriptions
-/realsense3r200/realsense3/depth/image/theora/parameter_updates
-/realsense3r200/realsense3/ir1/camera_info
-/realsense3r200/realsense3/ir1/image
-/realsense3r200/realsense3/ir1/image/compressed
-/realsense3r200/realsense3/ir1/image/compressed/parameter_descriptions
-/realsense3r200/realsense3/ir1/image/compressed/parameter_updates
-/realsense3r200/realsense3/ir1/image/compressedDepth
-/realsense3r200/realsense3/ir1/image/compressedDepth/parameter_descriptions
-/realsense3r200/realsense3/ir1/image/compressedDepth/parameter_updates
-/realsense3r200/realsense3/ir1/image/theora
-/realsense3r200/realsense3/ir1/image/theora/parameter_descriptions
-/realsense3r200/realsense3/ir1/image/theora/parameter_updates
-/realsense3r200/realsense3/ir2/camera_info
-/realsense3r200/realsense3/ir2/image
-/realsense3r200/realsense3/ir2/image/compressed
-/realsense3r200/realsense3/ir2/image/compressed/parameter_descriptions
-/realsense3r200/realsense3/ir2/image/compressed/parameter_updates
-/realsense3r200/realsense3/ir2/image/compressedDepth
-/realsense3r200/realsense3/ir2/image/compressedDepth/parameter_descriptions
-/realsense3r200/realsense3/ir2/image/compressedDepth/parameter_updates
-/realsense3r200/realsense3/ir2/image/theora
-/realsense3r200/realsense3/ir2/image/theora/parameter_descriptions
-/realsense3r200/realsense3/ir2/image/theora/parameter_updates
-/rosout
-/rosout_agg
-/tf
-/tf_static
+..
+/realsense2r200/realsense2/..
+..
+/realsense3r200/realsense3/..
 </pre>
 
-## 참고
+## Reference
+* https://github.com/IntelRealSense/realsense-ros
+* https://github.com/SyrianSpock/realsense_gazebo_plugin - origin
+* https://github.com/pal-robotics/realsense_gazebo_plugin - upgraded for D435
 
-https://github.com/IntelRealSense/realsense-ros
+---
 
-https://github.com/SyrianSpock/realsense_gazebo_plugin - origin 
+## Pointcloud on Gazebo
 
-https://github.com/pal-robotics/realsense_gazebo_plugin - upgraded for D435
+<img src="https://user-images.githubusercontent.com/80872528/115204849-e8702600-a133-11eb-84a5-a6a3813ff9a9.png"> </img>
+
+
+I located each point of Pointcloud in pcd file on Gazebo to see as 3D and 
+
+know whether there is a conflict with points and a robot, moving around in gazebo world.
+
+First, you have to customize your own plugin. There’s no plugin that make pointcloud on gazebo.
+
+It will help you to get pointcloud file(.pcd) from local then insert spheres for each point on gazebo. 
+
+One sphere will be a one point. Each point has x,y,z pose values.
+
+Second, make your own world and insert plugin that you customized before. 
+
+When you simulate your world, the connected plugin will make huge point cloud but it will take a long time for computer.
+
+### Plugin & CmakeLists.txt
+<pre>
+1. Make your project directory $mkdir gazebo_plugin_tutorial
+2. $ cd gazebo_plugin_tutorial
+3. Cutomize your plugin code. (In this project, use my PointcloudGazebo_pcd.cpp code)
+4. Make CMakeLists.txt file(Use my file in github.)
+5. Make new directory for building project $ mkdir build $ cd build
+6. Compile and build the code $ cmake../ $make
+7. Plugin done. You can see libPointcloudGazebo_pcd.so file in build directory.
+</pre>
+
+## World
+<pre>
+8. Then, you have to make your own world to simulate point cloud. 
+   Make new world file MyPointcloud_pcd.world.(Use my file in github.)
+9. You have to connect plugin file in world file.
+</pre>
+
+## Simulate on gazebo
+<pre>
+10. In terminal2, change directory to project directory and type 
+    (If you write below command in bashrc, it's very convenient. $gedit ~/.bashrc)
+    export GAZEBO_PLUGIN_PATH=$HOME/gazebo_plugin_tutorial/build:$GAZEBO_PLUGIN_PATH
+11. These will make you to access plugin what you customized. 
+12. Simulate $gazebo --verbose MyPointcloud_pcd.world
+13. “--verbose” helps you know progress. If there are errors, it means something wrong. 
+    You have to fix it for correct simulation.
+ 
+    It takes few time for inserting spheres(mean each points in point clouds).
+</pre>
+
+
+## Reference
+* pcd file :<https://github.com/PointCloudLibrary/data/tree/master/tutorials>
+* writing plugin : <http://gazebosim.org/tutorials?tut=plugins_hello_world&cat=write_plugin>
+
+
