@@ -21,7 +21,7 @@ Builing plugin and modifying
   $ git clone https://github.com/pal-robotics/realsense_gazebo_plugin.git
   $ cd realsense_gazebo_plugin
   $ mkdir build
-  $cd build
+  $ cd build
   $ cmake ../
   $ make
 </pre>
@@ -190,9 +190,9 @@ When you simulate your world, the connected plugin will make huge point cloud bu
 
 ### Plugin & CmakeLists.txt
 <pre>
-1. Make your project directory $mkdir gazebo_plugin_tutorial
-2. $ cd gazebo_plugin_tutorial
-3. Cutomize your plugin code. (In this project, use my PointcloudGazebo_pcd.cpp code)
+1. Make your project directory $mkdir -p gazebo_plugin_tutorial/src
+2. $ cd gazebo_plugin_tutorial/src
+3. Cutomize your plugin code. (In this project, use my gazebo_sim_pointcloud/PointcloudGazebo_pcd.cpp code)
 4. Make CMakeLists.txt file(Use my file in github.)
 5. Make new directory for building project $ mkdir build $ cd build
 6. Compile and build the code $ cmake../ $make
